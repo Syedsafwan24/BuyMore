@@ -92,9 +92,11 @@ export default function ProductsPage() {
 		try {
 			const response = await fetch('/api/categories');
 			const data = await response.json();
-			setCategories(data);
+			// Ensure data is an array
+			setCategories(Array.isArray(data) ? data : []);
 		} catch (error) {
 			console.error('Error fetching categories:', error);
+			setCategories([]);
 		}
 	};
 
@@ -116,14 +118,18 @@ export default function ProductsPage() {
 
 			const response = await fetch(`/api/items?${params}`);
 			const data = await response.json();
-			setProducts(data);
+			// Ensure data is an array
+			const safeData = Array.isArray(data) ? data : [];
+			setProducts(safeData);
 
 			// Store all products for filtering
 			if (!params.toString()) {
-				setAllProducts(data);
+				setAllProducts(safeData);
 			}
 		} catch (error) {
 			console.error('Error fetching products:', error);
+			setProducts([]);
+			setAllProducts([]);
 		} finally {
 			setLoading(false);
 		}
@@ -205,7 +211,7 @@ export default function ProductsPage() {
 		}
 	};
 
-	const tabs = ['All', ...categories.map((cat) => cat.name)];
+	const tabs = ['All', ...(Array.isArray(categories) ? categories.map((cat) => cat.name) : [])];
 
 	return (
 		<div className='min-h-screen bg-gray-50'>
@@ -282,7 +288,7 @@ export default function ProductsPage() {
 										className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
 									>
 										<option value=''>All Categories</option>
-										{categories.map((category) => (
+										{Array.isArray(categories) && categories.map((category) => (
 											<option key={category.id} value={category.name}>
 												{category.name}
 											</option>
@@ -397,7 +403,7 @@ export default function ProductsPage() {
 					</div>
 				) : (
 					<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-						{products.map((product) => (
+						{Array.isArray(products) && products.map((product) => (
 							<ProductCard key={product.id}>
 								<ProductCardImage
 									src={product.image || '/placeholder-product.jpg'}

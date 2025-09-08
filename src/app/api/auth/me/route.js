@@ -9,7 +9,12 @@ export async function GET() {
 		const token = cookieStore.get('token');
 
 		if (!token) {
-			return NextResponse.json({ error: 'No token found' }, { status: 401 });
+			return NextResponse.json({ error: 'No token found', authenticated: false }, { status: 401 });
+		}
+
+		if (!process.env.JWT_SECRET) {
+			console.error('JWT_SECRET is not configured');
+			return NextResponse.json({ error: 'Server configuration error', authenticated: false }, { status: 500 });
 		}
 
 		const decoded = jwt.verify(token.value, process.env.JWT_SECRET);
@@ -24,7 +29,7 @@ export async function GET() {
 		});
 
 		if (!user) {
-			return NextResponse.json({ error: 'User not found' }, { status: 404 });
+			return NextResponse.json({ error: 'User not found', authenticated: false }, { status: 404 });
 		}
 
 		// Return customer-focused user data
@@ -32,9 +37,10 @@ export async function GET() {
 			...user,
 			memberSince: user.createdAt,
 			role: 'customer', // Always customer for this e-commerce site
+			authenticated: true,
 		});
 	} catch (error) {
 		console.error('Error verifying token:', error);
-		return NextResponse.json({ error: 'Invalid token' }, { status: 401 });
+		return NextResponse.json({ error: 'Invalid token', authenticated: false }, { status: 401 });
 	}
 }

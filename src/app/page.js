@@ -68,10 +68,15 @@ export default function HomePage() {
 			const response = await fetch('/api/items');
 			if (response.ok) {
 				const data = await response.json();
-				setFeaturedProducts(data.slice(0, 8)); // Get first 8 products
+				// Ensure data is an array and get first 8 products
+				const safeData = Array.isArray(data) ? data : [];
+				setFeaturedProducts(safeData.slice(0, 8));
+			} else {
+				setFeaturedProducts([]);
 			}
 		} catch (error) {
 			console.error('Error fetching products:', error);
+			setFeaturedProducts([]);
 		} finally {
 			setLoading(false);
 		}
@@ -82,10 +87,15 @@ export default function HomePage() {
 			const response = await fetch('/api/categories');
 			if (response.ok) {
 				const data = await response.json();
-				setCategories(data.slice(0, 4)); // Get first 4 categories
+				// Ensure data is an array and get first 4 categories
+				const safeData = Array.isArray(data) ? data : [];
+				setCategories(safeData.slice(0, 4));
+			} else {
+				setCategories([]);
 			}
 		} catch (error) {
 			console.error('Error fetching categories:', error);
+			setCategories([]);
 		}
 	};
 
@@ -254,7 +264,7 @@ export default function HomePage() {
 						</div>
 					) : (
 						<div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4'>
-							{featuredProducts.map((product) => (
+							{Array.isArray(featuredProducts) && featuredProducts.map((product) => (
 								<div
 									key={product.id}
 									className='bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow group'

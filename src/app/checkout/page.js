@@ -561,7 +561,9 @@ export default function CheckoutPage() {
 												</p>
 											</div>
 											<span className='font-medium text-sm'>
-												{formatPriceDisplay((cartItem.item.price * cartItem.quantity))}
+												{formatPriceDisplay(
+													cartItem.item.price * cartItem.quantity
+												)}
 											</span>
 										</div>
 									))}

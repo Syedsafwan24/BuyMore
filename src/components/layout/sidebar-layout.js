@@ -30,7 +30,7 @@ export default function SidebarLayout({ children }) {
 	const [currentCategory, setCurrentCategory] = useState('');
 	const pathname = usePathname();
 	const router = useRouter();
-	
+
 	// Safely use searchParams with error boundary
 	let searchParams;
 	try {

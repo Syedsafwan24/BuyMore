@@ -34,7 +34,7 @@ async function main() {
 		{
 			name: 'iPhone 15 Pro',
 			description: 'Latest iPhone with advanced camera system and A17 Pro chip',
-			price: 134900.00,
+			price: 134900.0,
 			image:
 				'https://images.unsplash.com/photo-1592750475338-74b7b21085ab?w=500',
 			stock: 50,
@@ -43,7 +43,7 @@ async function main() {
 		{
 			name: 'MacBook Air M3',
 			description: 'Lightweight laptop with M3 chip and all-day battery life',
-			price: 114900.00,
+			price: 114900.0,
 			image: 'https://images.unsplash.com/photo-1541807084-5c52b6b3adef?w=500',
 			stock: 30,
 			categoryId: categories[0].id,
@@ -51,7 +51,7 @@ async function main() {
 		{
 			name: 'AirPods Pro',
 			description: 'Wireless earbuds with active noise cancellation',
-			price: 24900.00,
+			price: 24900.0,
 			image:
 				'https://images.unsplash.com/photo-1600294037681-c80b4cb5b434?w=500',
 			stock: 100,
@@ -60,7 +60,7 @@ async function main() {
 		{
 			name: 'Cotton T-Shirt',
 			description: 'Comfortable cotton t-shirt available in multiple colors',
-			price: 1299.00,
+			price: 1299.0,
 			image:
 				'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500',
 			stock: 200,
@@ -69,7 +69,7 @@ async function main() {
 		{
 			name: 'Denim Jeans',
 			description: 'Classic straight-fit denim jeans',
-			price: 3999.00,
+			price: 3999.0,
 			image: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=500',
 			stock: 150,
 			categoryId: categories[1].id,
@@ -77,7 +77,7 @@ async function main() {
 		{
 			name: 'JavaScript: The Good Parts',
 			description: 'Essential guide to JavaScript programming',
-			price: 899.00,
+			price: 899.0,
 			image: 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=500',
 			stock: 75,
 			categoryId: categories[2].id,
@@ -85,7 +85,7 @@ async function main() {
 		{
 			name: 'Smart Garden Kit',
 			description: 'Indoor hydroponic garden for growing herbs and vegetables',
-			price: 12999.00,
+			price: 12999.0,
 			image:
 				'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=500',
 			stock: 25,

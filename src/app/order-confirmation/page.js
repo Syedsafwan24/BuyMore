@@ -80,8 +80,8 @@ export default function OrderConfirmationPage() {
 					</div>
 					<h2 className='text-2xl font-bold text-gray-900 mb-4'>{error}</h2>
 					<p className='text-gray-600 mb-6'>
-						We couldn&apos;t find your order. Please check your order ID or contact
-						support.
+						We couldn&apos;t find your order. Please check your order ID or
+						contact support.
 					</p>
 					<div className='space-y-3'>
 						<Link href='/products'>
@@ -347,7 +347,9 @@ export default function OrderConfirmationPage() {
 											</div>
 											<div className='text-right'>
 												<p className='font-bold text-xl text-gray-900'>
-													{formatPriceDisplay((orderItem.price * orderItem.quantity))}
+													{formatPriceDisplay(
+														orderItem.price * orderItem.quantity
+													)}
 												</p>
 												<p className='text-sm text-gray-600'>
 													{formatPriceDisplay(orderItem.price)} each
