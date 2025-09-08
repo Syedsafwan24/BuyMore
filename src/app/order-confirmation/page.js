@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -416,3 +416,6 @@ export default function OrderConfirmationPage() {
 		</div>
 	);
 }
+
+// Disable static generation for this page
+export const dynamic = 'force-dynamic';
