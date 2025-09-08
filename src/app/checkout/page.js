@@ -326,7 +326,7 @@ export default function CheckoutPage() {
 									<div>
 										<CardTitle>Payment Method</CardTitle>
 										<CardDescription>
-											Choose how you'd like to pay
+											Choose how you&apos;d like to pay
 										</CardDescription>
 									</div>
 								</div>

@@ -80,7 +80,7 @@ export default function OrderConfirmationPage() {
 					</div>
 					<h2 className='text-2xl font-bold text-gray-900 mb-4'>{error}</h2>
 					<p className='text-gray-600 mb-6'>
-						We couldn't find your order. Please check your order ID or contact
+						We couldn&apos;t find your order. Please check your order ID or contact
 						support.
 					</p>
 					<div className='space-y-3'>
@@ -283,7 +283,7 @@ export default function OrderConfirmationPage() {
 										</div>
 										<div className='flex items-center text-gray-700'>
 											<Package className='w-4 h-4 mr-3 text-blue-500' />
-											<span>We'll notify you when your order ships</span>
+											<span>We&apos;ll notify you when your order ships</span>
 										</div>
 										<div className='flex items-center text-gray-700'>
 											<Truck className='w-4 h-4 mr-3 text-purple-500' />
@@ -398,7 +398,7 @@ export default function OrderConfirmationPage() {
 									Enjoyed your shopping experience?
 								</h3>
 								<p className='text-gray-600 mb-4'>
-									We'd love to hear your feedback! Your review helps other
+									We&apos;d love to hear your feedback! Your review helps other
 									customers.
 								</p>
 								<Button
