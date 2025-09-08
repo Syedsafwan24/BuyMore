@@ -264,41 +264,42 @@ export default function HomePage() {
 						</div>
 					) : (
 						<div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4'>
-							{Array.isArray(featuredProducts) && featuredProducts.map((product) => (
-								<div
-									key={product.id}
-									className='bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow group'
-								>
-									<Link href='/products'>
-										<div className='p-4'>
-											<div className='aspect-square bg-gray-100 rounded-lg mb-3 overflow-hidden'>
-												<img
-													src={product.image || '/placeholder-product.jpg'}
-													alt={product.name}
-													className='w-full h-full object-cover group-hover:scale-105 transition-transform duration-200'
-												/>
-											</div>
-											<h3 className='font-medium text-gray-900 text-sm mb-1 line-clamp-2'>
-												{product.name}
-											</h3>
-											<p className='text-xs text-gray-500 mb-2'>
-												{product.category?.name}
-											</p>
-											<div className='flex items-center justify-between'>
-												<span className='text-lg font-semibold text-gray-900'>
-													{formatPriceDisplay(product.price)}
-												</span>
-												<div className='flex items-center'>
-													<Star className='w-3 h-3 text-yellow-400 fill-current' />
-													<span className='text-xs text-gray-500 ml-1'>
-														4.2
+							{Array.isArray(featuredProducts) &&
+								featuredProducts.map((product) => (
+									<div
+										key={product.id}
+										className='bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow group'
+									>
+										<Link href='/products'>
+											<div className='p-4'>
+												<div className='aspect-square bg-gray-100 rounded-lg mb-3 overflow-hidden'>
+													<img
+														src={product.image || '/placeholder-product.jpg'}
+														alt={product.name}
+														className='w-full h-full object-cover group-hover:scale-105 transition-transform duration-200'
+													/>
+												</div>
+												<h3 className='font-medium text-gray-900 text-sm mb-1 line-clamp-2'>
+													{product.name}
+												</h3>
+												<p className='text-xs text-gray-500 mb-2'>
+													{product.category?.name}
+												</p>
+												<div className='flex items-center justify-between'>
+													<span className='text-lg font-semibold text-gray-900'>
+														{formatPriceDisplay(product.price)}
 													</span>
+													<div className='flex items-center'>
+														<Star className='w-3 h-3 text-yellow-400 fill-current' />
+														<span className='text-xs text-gray-500 ml-1'>
+															4.2
+														</span>
+													</div>
 												</div>
 											</div>
-										</div>
-									</Link>
-								</div>
-							))}
+										</Link>
+									</div>
+								))}
 						</div>
 					)}
 				</div>

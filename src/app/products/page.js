@@ -211,7 +211,10 @@ export default function ProductsPage() {
 		}
 	};
 
-	const tabs = ['All', ...(Array.isArray(categories) ? categories.map((cat) => cat.name) : [])];
+	const tabs = [
+		'All',
+		...(Array.isArray(categories) ? categories.map((cat) => cat.name) : []),
+	];
 
 	return (
 		<div className='min-h-screen bg-gray-50'>
@@ -288,11 +291,12 @@ export default function ProductsPage() {
 										className='w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
 									>
 										<option value=''>All Categories</option>
-										{Array.isArray(categories) && categories.map((category) => (
-											<option key={category.id} value={category.name}>
-												{category.name}
-											</option>
-										))}
+										{Array.isArray(categories) &&
+											categories.map((category) => (
+												<option key={category.id} value={category.name}>
+													{category.name}
+												</option>
+											))}
 									</select>
 								</div>
 
@@ -403,60 +407,63 @@ export default function ProductsPage() {
 					</div>
 				) : (
 					<div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
-						{Array.isArray(products) && products.map((product) => (
-							<ProductCard key={product.id}>
-								<ProductCardImage
-									src={product.image || '/placeholder-product.jpg'}
-									alt={product.name}
-								/>
-								<ProductCardContent>
-									<div className='flex items-start justify-between mb-2'>
-										<div className='flex-1'>
-											<p className='text-xs text-blue-600 font-medium mb-1'>
-												{product.category?.name || 'Product'}
-											</p>
-											<ProductCardTitle>{product.name}</ProductCardTitle>
-										</div>
-										<button className='p-1.5 hover:bg-gray-100 rounded-full transition-colors'>
-											<Heart className='w-4 h-4 text-gray-400 hover:text-red-500' />
-										</button>
-									</div>
-									<ProductCardFooter>
-										<div className='flex items-center justify-between mb-3'>
-											<span className='text-lg font-bold text-gray-900'>
-												{formatPriceDisplay(product.price)}
-											</span>
-											<div className='flex items-center'>
-												<Star className='w-3 h-3 text-yellow-400 fill-current' />
-												<span className='text-xs text-gray-500 ml-1'>4.5</span>
+						{Array.isArray(products) &&
+							products.map((product) => (
+								<ProductCard key={product.id}>
+									<ProductCardImage
+										src={product.image || '/placeholder-product.jpg'}
+										alt={product.name}
+									/>
+									<ProductCardContent>
+										<div className='flex items-start justify-between mb-2'>
+											<div className='flex-1'>
+												<p className='text-xs text-blue-600 font-medium mb-1'>
+													{product.category?.name || 'Product'}
+												</p>
+												<ProductCardTitle>{product.name}</ProductCardTitle>
 											</div>
+											<button className='p-1.5 hover:bg-gray-100 rounded-full transition-colors'>
+												<Heart className='w-4 h-4 text-gray-400 hover:text-red-500' />
+											</button>
 										</div>
-										<Button
-											size='sm'
-											onClick={() => handleAddToCart(product)}
-											disabled={addingToCart.has(product.id) || isUpdating}
-											className={`w-full transition-all duration-300 ${
-												addingToCart.has(product.id)
-													? 'bg-green-600 hover:bg-green-700'
-													: 'bg-blue-600 hover:bg-blue-700'
-											} text-white shadow-sm`}
-										>
-											{addingToCart.has(product.id) ? (
-												<>
-													<Check className='w-4 h-4 mr-2' />
-													Added!
-												</>
-											) : (
-												<>
-													<ShoppingCart className='w-4 h-4 mr-2' />
-													Add to Cart
-												</>
-											)}
-										</Button>
-									</ProductCardFooter>
-								</ProductCardContent>
-							</ProductCard>
-						))}
+										<ProductCardFooter>
+											<div className='flex items-center justify-between mb-3'>
+												<span className='text-lg font-bold text-gray-900'>
+													{formatPriceDisplay(product.price)}
+												</span>
+												<div className='flex items-center'>
+													<Star className='w-3 h-3 text-yellow-400 fill-current' />
+													<span className='text-xs text-gray-500 ml-1'>
+														4.5
+													</span>
+												</div>
+											</div>
+											<Button
+												size='sm'
+												onClick={() => handleAddToCart(product)}
+												disabled={addingToCart.has(product.id) || isUpdating}
+												className={`w-full transition-all duration-300 ${
+													addingToCart.has(product.id)
+														? 'bg-green-600 hover:bg-green-700'
+														: 'bg-blue-600 hover:bg-blue-700'
+												} text-white shadow-sm`}
+											>
+												{addingToCart.has(product.id) ? (
+													<>
+														<Check className='w-4 h-4 mr-2' />
+														Added!
+													</>
+												) : (
+													<>
+														<ShoppingCart className='w-4 h-4 mr-2' />
+														Add to Cart
+													</>
+												)}
+											</Button>
+										</ProductCardFooter>
+									</ProductCardContent>
+								</ProductCard>
+							))}
 					</div>
 				)}
 			</div>

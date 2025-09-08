@@ -4,13 +4,16 @@ import { prisma, testDatabaseConnection } from '@/lib/prisma';
 export async function GET() {
 	try {
 		const isConnected = await testDatabaseConnection();
-		
+
 		if (!isConnected) {
-			return NextResponse.json({
-				status: 'error',
-				message: 'Database connection failed',
-				timestamp: new Date().toISOString()
-			}, { status: 500 });
+			return NextResponse.json(
+				{
+					status: 'error',
+					message: 'Database connection failed',
+					timestamp: new Date().toISOString(),
+				},
+				{ status: 500 }
+			);
 		}
 
 		// Try a simple query
@@ -24,17 +27,19 @@ export async function GET() {
 			data: {
 				users: userCount,
 				categories: categoryCount,
-				items: itemCount
+				items: itemCount,
 			},
-			timestamp: new Date().toISOString()
+			timestamp: new Date().toISOString(),
 		});
-
 	} catch (error) {
 		console.error('Health check error:', error);
-		return NextResponse.json({
-			status: 'error',
-			message: error.message,
-			timestamp: new Date().toISOString()
-		}, { status: 500 });
+		return NextResponse.json(
+			{
+				status: 'error',
+				message: error.message,
+				timestamp: new Date().toISOString(),
+			},
+			{ status: 500 }
+		);
 	}
 }
