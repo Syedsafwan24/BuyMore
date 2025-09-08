@@ -399,5 +399,3 @@ export function updateOrderStatus(userId, orderId, status) {
 	}
 	return null;
 }
-
-export { categories };
