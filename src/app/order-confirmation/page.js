@@ -258,18 +258,25 @@ export default function OrderConfirmationPage() {
 														address = JSON.parse(raw);
 													} catch (_) {
 														// Not JSON, show as plain text
-														return <p className='text-gray-700 break-words'>{raw}</p>;
+														return (
+															<p className='text-gray-700 break-words'>{raw}</p>
+														);
 													}
 												} else if (raw && typeof raw === 'object') {
 													address = raw;
 												}
 
 												if (!address) {
-													return <p className='text-gray-500'>No shipping address available</p>;
+													return (
+														<p className='text-gray-500'>
+															No shipping address available
+														</p>
+													);
 												}
 
 												const name = address.fullName || address.name || '';
-												const line1 = address.address || address.addressLine1 || '';
+												const line1 =
+													address.address || address.addressLine1 || '';
 												const city = address.city || '';
 												const state = address.state || '';
 												const zip = address.zipCode || address.postalCode || '';

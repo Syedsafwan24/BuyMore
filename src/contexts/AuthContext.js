@@ -83,7 +83,7 @@ export const AuthProvider = ({ children }) => {
 				localStorage.removeItem('currentUser');
 			}
 		}
-		setLoading(false);
+		// Keep loading=true until fetchUser resolves to avoid race conditions with redirects
 		// Call after definition; don't add as dependency to avoid re-renders
 		fetchUser();
 		// eslint-disable-next-line react-hooks/exhaustive-deps

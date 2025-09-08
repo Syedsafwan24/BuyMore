@@ -72,6 +72,17 @@ export default function SidebarLayout({ children }) {
 		}
 	};
 
+	// Ensure protected navigation to /cart works reliably by avoiding prefetch + handling auth explicitly
+	const handleCartClick = (e) => {
+		e?.preventDefault?.();
+		if (user) {
+			router.push('/cart');
+		} else {
+			router.push('/login?redirect=/cart');
+		}
+		setIsSidebarOpen(false);
+	};
+
 	const sidebarItems = [
 		{
 			name: 'Home',
@@ -144,6 +155,8 @@ export default function SidebarLayout({ children }) {
 									<Link
 										key={item.name}
 										href={item.href}
+										prefetch={false}
+										onClick={item.href === '/cart' ? handleCartClick : undefined}
 										className={`flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md transition-colors ${
 											item.active
 												? 'bg-blue-50 text-blue-700'
@@ -241,6 +254,8 @@ export default function SidebarLayout({ children }) {
 							{/* Cart */}
 							<Link
 								href='/cart'
+								prefetch={false}
+								onClick={handleCartClick}
 								className='relative p-2 text-gray-600 hover:text-blue-600 rounded-md'
 								title='Shopping Cart'
 							>
