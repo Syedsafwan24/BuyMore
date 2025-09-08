@@ -122,32 +122,6 @@ export default function OrderConfirmationPage() {
 			</div>
 		);
 	}
-				<div className='text-center max-w-md mx-auto p-8'>
-					<div className='w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6'>
-						<Package className='w-8 h-8 text-red-600' />
-					</div>
-					<h2 className='text-2xl font-bold text-gray-900 mb-4'>{error}</h2>
-					<p className='text-gray-600 mb-6'>
-						We couldn&apos;t find your order. Please check your order ID or
-						contact support.
-					</p>
-					<div className='space-y-3'>
-						<Link href='/products'>
-							<Button className='w-full bg-blue-600 hover:bg-blue-700'>
-								<ShoppingBag className='w-4 h-4 mr-2' />
-								Continue Shopping
-							</Button>
-						</Link>
-						<Link href='/cart'>
-							<Button variant='outline' className='w-full'>
-								View Cart
-							</Button>
-						</Link>
-					</div>
-				</div>
-			</div>
-		);
-	}
 
 	return (
 		<div className='min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50'>

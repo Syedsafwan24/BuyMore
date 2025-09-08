@@ -19,9 +19,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import {
 	CreditCard,
 	Truck,
-											{getShippingCost() === 0
-											? 'FREE'
-											: `₹${getShippingCost().toFixed(2)}`}eld,
+	Shield,
 	Clock,
 	MapPin,
 	ArrowLeft,
