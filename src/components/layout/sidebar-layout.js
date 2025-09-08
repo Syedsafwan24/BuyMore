@@ -27,9 +27,17 @@ export default function SidebarLayout({ children }) {
 	const [searchQuery, setSearchQuery] = useState('');
 	const [user, setUser] = useState(null);
 	const [categories, setCategories] = useState([]);
+	const [currentCategory, setCurrentCategory] = useState('');
 	const pathname = usePathname();
 	const router = useRouter();
-	const searchParams = useSearchParams();
+	
+	// Safely use searchParams with error boundary
+	let searchParams;
+	try {
+		searchParams = useSearchParams();
+	} catch {
+		searchParams = null;
+	}
 
 	// Safely get cart data with fallback
 	let getTotalItems;
@@ -40,8 +48,12 @@ export default function SidebarLayout({ children }) {
 		getTotalItems = () => 0; // Fallback if cart context is not available
 	}
 
-	// Get current category from URL params
-	const currentCategory = searchParams.get('category') || '';
+	// Get current category from URL params safely
+	useEffect(() => {
+		if (searchParams) {
+			setCurrentCategory(searchParams.get('category') || '');
+		}
+	}, [searchParams]);
 
 	// Fetch user info
 	useEffect(() => {

@@ -11,6 +11,10 @@ const nextConfig = {
 		// Disable ESLint during builds
 		ignoreDuringBuilds: true,
 	},
+	experimental: {
+		// Force dynamic rendering for all pages
+		appDir: true,
+	},
 };
 
 export default nextConfig;

@@ -34,3 +34,6 @@ export default function RootLayout({ children }) {
 		</html>
 	);
 }
+
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
