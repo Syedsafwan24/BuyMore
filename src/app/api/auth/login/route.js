@@ -1,16 +1,14 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import { prisma } from '@/lib/prisma';
+import { getUserByEmail } from '@/lib/localData';
 import { signToken } from '@/lib/auth';
 
 export async function POST(request) {
 	try {
 		const { email, password } = await request.json();
 
-		// Find user
-		const user = await prisma.user.findUnique({
-			where: { email },
-		});
+		// Find user in local data
+		const user = getUserByEmail(email);
 
 		if (!user) {
 			return NextResponse.json(

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
-import { prisma } from '@/lib/prisma';
+import { getUserByEmail, createUser } from '@/lib/localData';
 import { signToken } from '@/lib/auth';
 
 export async function POST(request) {
@@ -8,9 +8,7 @@ export async function POST(request) {
 		const { email, password, name } = await request.json();
 
 		// Check if user already exists
-		const existingUser = await prisma.user.findUnique({
-			where: { email },
-		});
+		const existingUser = getUserByEmail(email);
 
 		if (existingUser) {
 			return NextResponse.json(
@@ -23,12 +21,10 @@ export async function POST(request) {
 		const hashedPassword = await bcrypt.hash(password, 12);
 
 		// Create user
-		const user = await prisma.user.create({
-			data: {
-				email,
-				password: hashedPassword,
-				name,
-			},
+		const user = createUser({
+			email,
+			password: hashedPassword,
+			name,
 		});
 
 		// Generate token

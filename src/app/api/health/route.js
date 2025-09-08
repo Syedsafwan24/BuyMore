@@ -1,29 +1,16 @@
 import { NextResponse } from 'next/server';
-import { prisma, testDatabaseConnection } from '@/lib/prisma';
+import { getAllUsers, getAllItems, categories } from '@/lib/staticData';
 
 export async function GET() {
 	try {
-		const isConnected = await testDatabaseConnection();
-
-		if (!isConnected) {
-			return NextResponse.json(
-				{
-					status: 'error',
-					message: 'Database connection failed',
-					timestamp: new Date().toISOString(),
-				},
-				{ status: 500 }
-			);
-		}
-
-		// Try a simple query
-		const userCount = await prisma.user.count();
-		const categoryCount = await prisma.category.count();
-		const itemCount = await prisma.item.count();
+		// Get counts from static data
+		const userCount = getAllUsers().length;
+		const categoryCount = categories.length;
+		const itemCount = getAllItems().length;
 
 		return NextResponse.json({
 			status: 'ok',
-			message: 'Database is accessible',
+			message: 'Static data is accessible',
 			data: {
 				users: userCount,
 				categories: categoryCount,

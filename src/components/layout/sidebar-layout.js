@@ -6,6 +6,7 @@ import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useCart } from '@/hooks/useCart';
+import { useAuth } from '@/contexts/AuthContext';
 import {
 	ShoppingBag,
 	Heart,
@@ -25,11 +26,11 @@ import {
 export default function SidebarLayout({ children }) {
 	const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 	const [searchQuery, setSearchQuery] = useState('');
-	const [user, setUser] = useState(null);
 	const [categories, setCategories] = useState([]);
 	const [currentCategory, setCurrentCategory] = useState('');
 	const pathname = usePathname();
 	const router = useRouter();
+	const { user, logout } = useAuth();
 
 	// Safely use searchParams with error boundary
 	let searchParams;
@@ -55,23 +56,6 @@ export default function SidebarLayout({ children }) {
 		}
 	}, [searchParams]);
 
-	// Fetch user info
-	useEffect(() => {
-		fetchUserInfo();
-	}, []);
-
-	const fetchUserInfo = async () => {
-		try {
-			const response = await fetch('/api/auth/me');
-			if (response.ok) {
-				const userData = await response.json();
-				setUser(userData);
-			}
-		} catch (error) {
-			console.error('Error fetching user info:', error);
-		}
-	};
-
 	const handleSearch = (e) => {
 		e.preventDefault();
 		if (searchQuery.trim()) {
@@ -81,8 +65,7 @@ export default function SidebarLayout({ children }) {
 
 	const handleLogout = async () => {
 		try {
-			await fetch('/api/auth/logout', { method: 'POST' });
-			setUser(null);
+			await logout();
 			router.push('/');
 		} catch (error) {
 			console.error('Error logging out:', error);

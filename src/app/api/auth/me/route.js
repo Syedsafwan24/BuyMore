@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import jwt from 'jsonwebtoken';
-import { prisma } from '@/lib/prisma';
+import { getUserById } from '@/lib/localData';
 
 export async function GET() {
 	try {
@@ -15,44 +15,56 @@ export async function GET() {
 			);
 		}
 
-		if (!process.env.JWT_SECRET) {
-			console.error('JWT_SECRET is not configured');
+		if (!process.env.NEXTAUTH_SECRET) {
+			console.error('NEXTAUTH_SECRET is not configured');
 			return NextResponse.json(
 				{ error: 'Server configuration error', authenticated: false },
 				{ status: 500 }
 			);
 		}
 
-		const decoded = jwt.verify(token.value, process.env.JWT_SECRET);
-		const user = await prisma.user.findUnique({
-			where: { id: decoded.userId },
-			select: {
-				id: true,
-				email: true,
-				name: true,
-				createdAt: true,
-			},
-		});
+		const decoded = jwt.verify(token.value, process.env.NEXTAUTH_SECRET);
+		const user = getUserById(decoded.userId);
 
 		if (!user) {
-			return NextResponse.json(
+			// Clear invalid token cookie
+			const response = NextResponse.json(
 				{ error: 'User not found', authenticated: false },
 				{ status: 404 }
 			);
+			response.cookies.set('token', '', {
+				httpOnly: true,
+				secure: process.env.NODE_ENV === 'production',
+				sameSite: 'lax',
+				maxAge: 0, // Expire immediately
+			});
+			return response;
 		}
 
 		// Return customer-focused user data
 		return NextResponse.json({
-			...user,
+			id: user.id,
+			email: user.email,
+			name: user.name,
+			createdAt: user.createdAt,
 			memberSince: user.createdAt,
 			role: 'customer', // Always customer for this e-commerce site
 			authenticated: true,
 		});
 	} catch (error) {
 		console.error('Error verifying token:', error);
-		return NextResponse.json(
+
+		// Clear invalid token cookie
+		const response = NextResponse.json(
 			{ error: 'Invalid token', authenticated: false },
 			{ status: 401 }
 		);
+		response.cookies.set('token', '', {
+			httpOnly: true,
+			secure: process.env.NODE_ENV === 'production',
+			sameSite: 'lax',
+			maxAge: 0, // Expire immediately
+		});
+		return response;
 	}
 }

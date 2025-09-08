@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
 import { getTokenFromRequest, verifyToken } from '@/lib/auth';
+import { findItemById } from '@/lib/staticData';
+import { getOrderById } from '@/lib/localData';
 
 export async function GET(request, { params }) {
 	try {
@@ -13,29 +14,35 @@ export async function GET(request, { params }) {
 
 		const { id } = await params;
 
-		const order = await prisma.order.findFirst({
-			where: {
-				id: id,
-				userId: payload.userId,
-			},
-			include: {
-				orderItems: {
-					include: {
-						item: {
-							include: {
-								category: true,
-							},
-						},
-					},
-				},
-			},
-		});
+		const order = getOrderById(id);
 
 		if (!order) {
 			return NextResponse.json({ error: 'Order not found' }, { status: 404 });
 		}
 
-		return NextResponse.json(order);
+		// Check if order belongs to the user
+		if (order.userId !== payload.userId) {
+			return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+		}
+
+		// Enrich order items with full item data
+		const enrichedOrder = {
+			...order,
+			orderItems: order.items.map((orderItem) => {
+				const item = findItemById(orderItem.itemId);
+				return {
+					...orderItem,
+					item: item
+						? {
+								...item,
+								category: item.category,
+						  }
+						: null,
+				};
+			}),
+		};
+
+		return NextResponse.json(enrichedOrder);
 	} catch (error) {
 		console.error('Get order error:', error);
 		return NextResponse.json(

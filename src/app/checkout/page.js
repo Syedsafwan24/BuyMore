@@ -14,6 +14,8 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
+import { useCart } from '@/hooks/useCart';
+import { useAuth } from '@/contexts/AuthContext';
 import {
 	CreditCard,
 	Truck,
@@ -22,14 +24,23 @@ import {
 	MapPin,
 	ArrowLeft,
 	CheckCircle,
+	Loader,
 } from 'lucide-react';
 
 export default function CheckoutPage() {
-	const [cartItems, setCartItems] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [processing, setProcessing] = useState(false);
 	const [error, setError] = useState('');
 	const router = useRouter();
+
+	const { user, loading: authLoading } = useAuth();
+	const {
+		cartItems,
+		getTotalPrice: getCartTotalPrice,
+		getTotalItems: getCartTotalItems,
+		checkout,
+		loading: cartLoading,
+	} = useCart();
 
 	const [shippingAddress, setShippingAddress] = useState({
 		fullName: '',
@@ -48,54 +59,45 @@ export default function CheckoutPage() {
 		cardName: '',
 	});
 
+	// Redirect to login if not authenticated
 	useEffect(() => {
-		fetchCartItems();
-	}, []);
+		if (!authLoading && !user) {
+			router.push('/login?redirect=/checkout');
+		}
+	}, [user, authLoading, router]);
 
-	const fetchCartItems = async () => {
-		try {
-			setLoading(true);
-			const response = await fetch('/api/cart');
+	// Check if cart is empty and redirect
+	useEffect(() => {
+		if (!cartLoading && cartItems.length === 0) {
+			router.push('/cart');
+		}
+	}, [cartItems, cartLoading, router]);
 
-			if (!response.ok) {
-				if (response.status === 401) {
-					router.push('/login');
-					return;
-				}
-				throw new Error('Failed to fetch cart');
-			}
-
-			const data = await response.json();
-			if (data.length === 0) {
-				router.push('/cart');
-				return;
-			}
-			setCartItems(data);
-		} catch (error) {
-			console.error('Error fetching cart:', error);
-			setError('Failed to load cart items');
-		} finally {
+	useEffect(() => {
+		if (!authLoading && !cartLoading) {
 			setLoading(false);
 		}
-	};
+	}, [authLoading, cartLoading]);
 
-	const getTotalPrice = () => {
-		return cartItems
-			.reduce((total, item) => total + item.item.price * item.quantity, 0)
-			.toFixed(2);
-	};
-
-	const getTotalItems = () => {
-		return cartItems.reduce((total, item) => total + item.quantity, 0);
-	};
+	// Show loading if still checking auth/cart or user not found
+	if (authLoading || cartLoading || !user || loading) {
+		return (
+			<div className='min-h-screen flex items-center justify-center'>
+				<div className='text-center'>
+					<Loader className='w-8 h-8 animate-spin mx-auto mb-4' />
+					<p>Loading...</p>
+				</div>
+			</div>
+		);
+	}
 
 	const getShippingCost = () => {
-		const total = parseFloat(getTotalPrice());
+		const total = parseFloat(getCartTotalPrice());
 		return total > 50 ? 0 : 9.99;
 	};
 
 	const getFinalTotal = () => {
-		return (parseFloat(getTotalPrice()) + getShippingCost()).toFixed(2);
+		return (parseFloat(getCartTotalPrice()) + getShippingCost()).toFixed(2);
 	};
 
 	const handleSubmit = async (e) => {
@@ -104,27 +106,13 @@ export default function CheckoutPage() {
 		setError('');
 
 		try {
-			const response = await fetch('/api/checkout', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					shippingAddress,
-					paymentMethod,
-					cardDetails: paymentMethod === 'credit_card' ? cardDetails : null,
-				}),
-			});
+			// Use the cart's checkout function
+			const order = await checkout();
 
-			const data = await response.json();
-
-			if (response.ok) {
-				router.push(`/order-confirmation?orderId=${data.order.id}`);
-			} else {
-				setError(data.error || 'Checkout failed');
-			}
+			// Redirect to order confirmation
+			router.push(`/order-confirmation?orderId=${order.id}`);
 		} catch (error) {
-			setError('Something went wrong. Please try again.');
+			setError(error.message || 'Something went wrong. Please try again.');
 		} finally {
 			setProcessing(false);
 		}
@@ -572,8 +560,8 @@ export default function CheckoutPage() {
 								{/* Totals */}
 								<div className='border-t border-gray-200 pt-4 space-y-3'>
 									<div className='flex justify-between text-sm'>
-										<span>Subtotal ({getTotalItems()} items):</span>
-										<span>{formatPriceDisplay(getTotalPrice())}</span>
+										<span>Subtotal ({getCartTotalItems()} items):</span>
+										<span>{formatPriceDisplay(getCartTotalPrice())}</span>
 									</div>
 									<div className='flex justify-between text-sm'>
 										<div className='flex items-center'>

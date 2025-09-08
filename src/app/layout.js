@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import SidebarLayout from '@/components/layout/sidebar-layout';
 import { CartProvider } from '@/hooks/useCart';
+import { AuthProvider } from '@/contexts/AuthContext';
 import { ToastProvider } from '@/components/ui/toast';
 
 const geistSans = Geist({
@@ -26,9 +27,11 @@ export default function RootLayout({ children }) {
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
 				<ToastProvider>
-					<CartProvider>
-						<SidebarLayout>{children}</SidebarLayout>
-					</CartProvider>
+					<AuthProvider>
+						<CartProvider>
+							<SidebarLayout>{children}</SidebarLayout>
+						</CartProvider>
+					</AuthProvider>
 				</ToastProvider>
 			</body>
 		</html>

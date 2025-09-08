@@ -11,10 +11,7 @@ const nextConfig = {
 		// Disable ESLint during builds
 		ignoreDuringBuilds: true,
 	},
-	experimental: {
-		// Force dynamic rendering for all pages
-		appDir: true,
-	},
+	// App Router is now stable, no experimental config needed
 };
 
 export default nextConfig;

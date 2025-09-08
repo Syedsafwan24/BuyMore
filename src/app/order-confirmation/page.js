@@ -42,12 +42,16 @@ export default function OrderConfirmationPage() {
 
 	const fetchOrder = async () => {
 		try {
-			const response = await fetch(`/api/orders/${orderId}`);
+			const response = await fetch(`/api/orders/${orderId}`, {
+				credentials: 'include', // Include cookies for authentication
+			});
 
 			if (response.ok) {
 				const data = await response.json();
 				setOrder(data);
 			} else {
+				const errorData = await response.json().catch(() => ({}));
+				console.error('Order fetch failed:', response.status, errorData);
 				setError('Order not found');
 			}
 		} catch (error) {
@@ -209,7 +213,7 @@ export default function OrderConfirmationPage() {
 										<div>
 											<span className='text-gray-600'>Payment Method</span>
 											<p className='font-medium text-gray-900 mt-1'>
-												{order.paymentMethod
+												{(order.paymentMethod || 'credit_card')
 													.replace('_', ' ')
 													.replace(/\b\w/g, (l) => l.toUpperCase())}
 											</p>
@@ -217,7 +221,7 @@ export default function OrderConfirmationPage() {
 										<div>
 											<span className='text-gray-600'>Order Total</span>
 											<p className='font-bold text-2xl text-green-600 mt-1'>
-												${order.total.toFixed(2)}
+												${(order.total || order.totalAmount || 0).toFixed(2)}
 											</p>
 										</div>
 									</div>
@@ -322,47 +326,57 @@ export default function OrderConfirmationPage() {
 							</CardHeader>
 							<CardContent>
 								<div className='space-y-4'>
-									{order.orderItems?.map((orderItem) => (
-										<div
-											key={orderItem.id}
-											className='flex items-center space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors'
-										>
-											<img
-												src={orderItem.item.image}
-												alt={orderItem.item.name}
-												className='w-20 h-20 object-cover rounded-lg shadow-md'
-											/>
-											<div className='flex-1'>
-												<h4 className='font-semibold text-gray-900 text-lg'>
-													{orderItem.item.name}
-												</h4>
-												<p className='text-gray-600'>
-													{orderItem.item.category?.name}
-												</p>
-												<div className='flex items-center mt-2'>
-													<span className='text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded'>
-														Qty: {orderItem.quantity}
-													</span>
+									{(order.orderItems || order.items || []).map(
+										(orderItem, index) => (
+											<div
+												key={
+													orderItem.id || orderItem.itemId || `item-${index}`
+												}
+												className='flex items-center space-x-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors'
+											>
+												<img
+													src={
+														orderItem.item?.imageUrl ||
+														orderItem.item?.image ||
+														'/placeholder-product.svg'
+													}
+													alt={
+														orderItem.item?.name || orderItem.name || 'Product'
+													}
+													className='w-20 h-20 object-cover rounded-lg shadow-md'
+												/>
+												<div className='flex-1'>
+													<h4 className='font-semibold text-gray-900 text-lg'>
+														{orderItem.item?.name || orderItem.name}
+													</h4>
+													<p className='text-gray-600'>
+														{orderItem.item?.category?.name || 'Product'}
+													</p>
+													<div className='flex items-center mt-2'>
+														<span className='text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded'>
+															Qty: {orderItem.quantity}
+														</span>
+													</div>
+												</div>
+												<div className='text-right'>
+													<p className='font-bold text-xl text-gray-900'>
+														{formatPriceDisplay(
+															orderItem.price * orderItem.quantity
+														)}
+													</p>
+													<p className='text-sm text-gray-600'>
+														{formatPriceDisplay(orderItem.price)} each
+													</p>
 												</div>
 											</div>
-											<div className='text-right'>
-												<p className='font-bold text-xl text-gray-900'>
-													{formatPriceDisplay(
-														orderItem.price * orderItem.quantity
-													)}
-												</p>
-												<p className='text-sm text-gray-600'>
-													{formatPriceDisplay(orderItem.price)} each
-												</p>
-											</div>
-										</div>
-									))}
+										)
+									)}
 
 									<div className='border-t border-gray-200 pt-4'>
 										<div className='flex justify-between items-center text-2xl font-bold text-gray-900'>
 											<span>Order Total:</span>
 											<span className='text-green-600'>
-												${order.total.toFixed(2)}
+												${(order.total || order.totalAmount || 0).toFixed(2)}
 											</span>
 										</div>
 									</div>

@@ -1,65 +1,49 @@
 import { NextResponse } from 'next/server';
-import { prisma, testDatabaseConnection } from '@/lib/prisma';
+import { getAllItems, createItem, categories } from '@/lib/staticData';
 
 export async function GET(request) {
 	try {
-		// Test database connection first
-		const isConnected = await testDatabaseConnection();
-		if (!isConnected) {
-			console.error('Database connection failed for items');
-			return NextResponse.json([], { status: 200 }); // Return empty array instead of error
-		}
-
 		const { searchParams } = new URL(request.url);
 		const category = searchParams.get('category');
 		const minPrice = searchParams.get('minPrice');
 		const maxPrice = searchParams.get('maxPrice');
 		const search = searchParams.get('search');
 
-		// Build where clause for filtering
-		const where = {};
+		// Get all items from static data
+		let items = getAllItems();
 
+		// Apply filters
 		if (category) {
-			where.category = {
-				name: {
-					equals: category,
-					mode: 'insensitive',
-				},
-			};
+			items = items.filter(
+				(item) => item.category.name.toLowerCase() === category.toLowerCase()
+			);
 		}
 
-		if (minPrice || maxPrice) {
-			where.price = {};
-			if (minPrice) where.price.gte = parseFloat(minPrice);
-			if (maxPrice) where.price.lte = parseFloat(maxPrice);
+		if (minPrice) {
+			const min = parseFloat(minPrice);
+			if (!isNaN(min)) {
+				items = items.filter((item) => item.price >= min);
+			}
+		}
+
+		if (maxPrice) {
+			const max = parseFloat(maxPrice);
+			if (!isNaN(max)) {
+				items = items.filter((item) => item.price <= max);
+			}
 		}
 
 		if (search) {
-			where.OR = [
-				{
-					name: {
-						contains: search,
-						mode: 'insensitive',
-					},
-				},
-				{
-					description: {
-						contains: search,
-						mode: 'insensitive',
-					},
-				},
-			];
+			const searchLower = search.toLowerCase();
+			items = items.filter(
+				(item) =>
+					item.name.toLowerCase().includes(searchLower) ||
+					item.description.toLowerCase().includes(searchLower)
+			);
 		}
 
-		const items = await prisma.item.findMany({
-			where,
-			include: {
-				category: true,
-			},
-			orderBy: {
-				createdAt: 'desc',
-			},
-		});
+		// Sort by creation date (newest first)
+		items.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
 		// Always return an array, even if empty
 		return NextResponse.json(items || []);
@@ -72,21 +56,26 @@ export async function GET(request) {
 
 export async function POST(request) {
 	try {
-		const { name, description, price, image, stock, categoryId } =
+		const { name, description, price, imageUrl, stock, categoryId } =
 			await request.json();
 
-		const item = await prisma.item.create({
-			data: {
-				name,
-				description,
-				price: parseFloat(price),
-				image,
-				stock: parseInt(stock),
-				categoryId,
-			},
-			include: {
-				category: true,
-			},
+		// Find category
+		const category = categories.find((cat) => cat.id === categoryId);
+		if (!category) {
+			return NextResponse.json(
+				{ error: 'Category not found' },
+				{ status: 400 }
+			);
+		}
+
+		const item = createItem({
+			name,
+			description,
+			price: parseFloat(price),
+			imageUrl,
+			stock: parseInt(stock),
+			categoryId,
+			category,
 		});
 
 		return NextResponse.json(item, { status: 201 });

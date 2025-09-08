@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { formatPriceDisplay } from '@/lib/utils';
@@ -13,6 +14,7 @@ import {
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { useCart } from '@/hooks/useCart';
+import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/toast';
 import {
 	ShoppingBag,
@@ -29,7 +31,9 @@ import {
 export default function CartPage() {
 	const [updatingItems, setUpdatingItems] = useState(new Set());
 	const [removingItems, setRemovingItems] = useState(new Set());
+	const router = useRouter();
 
+	const { user, loading: authLoading } = useAuth();
 	const {
 		cartItems,
 		loading,
@@ -40,6 +44,25 @@ export default function CartPage() {
 		getTotalItems,
 	} = useCart();
 	const { success, error } = useToast();
+
+	// Redirect to login if not authenticated
+	useEffect(() => {
+		if (!authLoading && !user) {
+			router.push('/login?redirect=/cart');
+		}
+	}, [user, authLoading, router]);
+
+	// Show loading if still checking auth or user not found
+	if (authLoading || !user) {
+		return (
+			<div className='min-h-screen flex items-center justify-center'>
+				<div className='text-center'>
+					<Loader className='w-8 h-8 animate-spin mx-auto mb-4' />
+					<p>Loading...</p>
+				</div>
+			</div>
+		);
+	}
 
 	const handleUpdateQuantity = async (cartItemId, newQuantity) => {
 		if (newQuantity < 1 || updatingItems.has(cartItemId)) return;
@@ -136,7 +159,11 @@ export default function CartPage() {
 									<CardContent className='p-6'>
 										<div className='flex items-center space-x-4'>
 											<img
-												src={cartItem.item.image || '/placeholder-product.jpg'}
+												src={
+													cartItem.item.image ||
+													cartItem.item.imageUrl ||
+													'/placeholder-product.svg'
+												}
 												alt={cartItem.item.name}
 												className='w-20 h-20 object-cover rounded-lg'
 											/>

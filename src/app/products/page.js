@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,6 +17,7 @@ import {
 	ProductCardFooter,
 } from '@/components/ui/card';
 import { useCart } from '@/hooks/useCart';
+import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/components/ui/toast';
 import {
 	Heart,
@@ -47,8 +48,10 @@ export default function ProductsPage() {
 	const [viewMode, setViewMode] = useState('grid'); // grid or list
 
 	const { addToCart, isUpdating } = useCart();
+	const { user } = useAuth();
 	const { success, error } = useToast();
 	const searchParams = useSearchParams();
+	const router = useRouter();
 
 	// Initialize filters from URL parameters
 	useEffect(() => {
@@ -138,6 +141,13 @@ export default function ProductsPage() {
 	const handleAddToCart = async (product) => {
 		const productId = product.id;
 
+		// Check if user is logged in
+		if (!user) {
+			error('Please login to add items to cart');
+			router.push('/login?redirect=/products');
+			return;
+		}
+
 		// Prevent double clicks
 		if (addingToCart.has(productId)) return;
 
@@ -148,7 +158,7 @@ export default function ProductsPage() {
 				id: product.id,
 				name: product.name,
 				price: product.price,
-				image: product.image,
+				image: product.imageUrl,
 				category: product.category,
 				stock: product.stock,
 			});
@@ -159,7 +169,7 @@ export default function ProductsPage() {
 				error(result.error || 'Failed to add item to cart');
 			}
 		} catch (err) {
-			error('Please login to add items to cart');
+			error('Failed to add item to cart. Please try again.');
 		} finally {
 			setAddingToCart((prev) => {
 				const newSet = new Set(prev);
@@ -411,20 +421,22 @@ export default function ProductsPage() {
 							products.map((product) => (
 								<ProductCard key={product.id}>
 									<ProductCardImage
-										src={product.image || '/placeholder-product.jpg'}
+										src={product.imageUrl || '/placeholder-product.svg'}
 										alt={product.name}
 									/>
 									<ProductCardContent>
-										<div className='flex items-start justify-between mb-2'>
-											<div className='flex-1'>
-												<p className='text-xs text-blue-600 font-medium mb-1'>
-													{product.category?.name || 'Product'}
-												</p>
-												<ProductCardTitle>{product.name}</ProductCardTitle>
+										<div className='flex-1'>
+											<div className='flex items-start justify-between mb-2'>
+												<div className='flex-1'>
+													<p className='text-xs text-blue-600 font-medium mb-1'>
+														{product.category?.name || 'Product'}
+													</p>
+													<ProductCardTitle>{product.name}</ProductCardTitle>
+												</div>
+												<button className='p-1.5 hover:bg-gray-100 rounded-full transition-colors'>
+													<Heart className='w-4 h-4 text-gray-400 hover:text-red-500' />
+												</button>
 											</div>
-											<button className='p-1.5 hover:bg-gray-100 rounded-full transition-colors'>
-												<Heart className='w-4 h-4 text-gray-400 hover:text-red-500' />
-											</button>
 										</div>
 										<ProductCardFooter>
 											<div className='flex items-center justify-between mb-3'>

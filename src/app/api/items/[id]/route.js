@@ -1,16 +1,11 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { findItemById, updateItem, deleteItem } from '@/lib/staticData';
 
 export async function GET(request, { params }) {
 	try {
 		const { id } = await params;
 
-		const item = await prisma.item.findUnique({
-			where: { id: id },
-			include: {
-				category: true,
-			},
-		});
+		const item = findItemById(id);
 
 		if (!item) {
 			return NextResponse.json({ error: 'Item not found' }, { status: 404 });
@@ -32,22 +27,20 @@ export async function PUT(request, { params }) {
 		const { name, description, price, image, stock, categoryId } =
 			await request.json();
 
-		const item = await prisma.item.update({
-			where: { id: id },
-			data: {
-				name,
-				description,
-				price: parseFloat(price),
-				image,
-				stock: parseInt(stock),
-				categoryId,
-			},
-			include: {
-				category: true,
-			},
+		const updatedItem = updateItem(id, {
+			name,
+			description,
+			price: parseFloat(price),
+			image,
+			stock: parseInt(stock),
+			categoryId,
 		});
 
-		return NextResponse.json(item);
+		if (!updatedItem) {
+			return NextResponse.json({ error: 'Item not found' }, { status: 404 });
+		}
+
+		return NextResponse.json(updatedItem);
 	} catch (error) {
 		console.error('Update item error:', error);
 		return NextResponse.json(
@@ -61,9 +54,11 @@ export async function DELETE(request, { params }) {
 	try {
 		const { id } = await params;
 
-		await prisma.item.delete({
-			where: { id: id },
-		});
+		const deletedItem = deleteItem(id);
+
+		if (!deletedItem) {
+			return NextResponse.json({ error: 'Item not found' }, { status: 404 });
+		}
 
 		return NextResponse.json({ message: 'Item deleted successfully' });
 	} catch (error) {
