@@ -296,47 +296,51 @@ export const CartProvider = ({ children }) => {
 	}, [user]);
 
 	// Checkout function to create order
-	const checkout = useCallback(async (checkoutData = {}) => {
-		if (!user) {
-			throw new Error('You must be logged in to checkout');
-		}
-
-		if (cartItems.length === 0) {
-			throw new Error('Cart is empty');
-		}
-
-		const totalAmount = checkoutData.totalAmount || parseFloat(getTotalPrice());
-
-		try {
-			const response = await fetch('/api/checkout', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				credentials: 'include',
-				body: JSON.stringify({
-					cartItems,
-					totalAmount,
-					shippingAddress: checkoutData.shippingAddress,
-					paymentMethod: checkoutData.paymentMethod,
-				}),
-			});
-
-			if (!response.ok) {
-				throw new Error('Checkout failed');
+	const checkout = useCallback(
+		async (checkoutData = {}) => {
+			if (!user) {
+				throw new Error('You must be logged in to checkout');
 			}
 
-			const result = await response.json();
+			if (cartItems.length === 0) {
+				throw new Error('Cart is empty');
+			}
 
-			// Clear cart after successful checkout
-			await clearCart();
+			const totalAmount =
+				checkoutData.totalAmount || parseFloat(getTotalPrice());
 
-			return result.order;
-		} catch (error) {
-			console.error('Checkout error:', error);
-			throw error;
-		}
-	}, [user, cartItems, getTotalPrice, clearCart]);
+			try {
+				const response = await fetch('/api/checkout', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					credentials: 'include',
+					body: JSON.stringify({
+						cartItems,
+						totalAmount,
+						shippingAddress: checkoutData.shippingAddress,
+						paymentMethod: checkoutData.paymentMethod,
+					}),
+				});
+
+				if (!response.ok) {
+					throw new Error('Checkout failed');
+				}
+
+				const result = await response.json();
+
+				// Clear cart after successful checkout
+				await clearCart();
+
+				return result.order;
+			} catch (error) {
+				console.error('Checkout error:', error);
+				throw error;
+			}
+		},
+		[user, cartItems, getTotalPrice, clearCart]
+	);
 
 	const value = {
 		cartItems,

@@ -8,37 +8,38 @@ const ORDERS_FILE = path.join(DATA_DIR, 'orders.json');
 let memoryStore = {
 	orders: [
 		{
-			id: "1000",
-			userId: "1",
+			id: '1000',
+			userId: '1',
 			items: [
 				{
-					itemId: "1",
-					name: "IKEA Wooden Dining Table",
+					itemId: '1',
+					name: 'IKEA Wooden Dining Table',
 					price: 12999,
 					quantity: 1,
-					subtotal: 12999
-				}
+					subtotal: 12999,
+				},
 			],
 			totalAmount: 12999,
-			paymentMethod: "credit_card",
+			paymentMethod: 'credit_card',
 			shippingAddress: {
-				name: "Demo User",
-				email: "demo@example.com",
-				address: "123 Demo Street",
-				city: "Demo City",
-				state: "Demo State",
-				zipCode: "12345",
-				country: "India"
+				name: 'Demo User',
+				email: 'demo@example.com',
+				address: '123 Demo Street',
+				city: 'Demo City',
+				state: 'Demo State',
+				zipCode: '12345',
+				country: 'India',
 			},
-			status: "confirmed",
-			createdAt: new Date().toISOString()
-		}
+			status: 'confirmed',
+			createdAt: new Date().toISOString(),
+		},
 	],
-	nextOrderId: 1001
+	nextOrderId: 1001,
 };
 
 // Check if we're in a serverless environment (Netlify/Vercel)
-const isServerless = process.env.NETLIFY || process.env.VERCEL || !fs.existsSync;
+const isServerless =
+	process.env.NETLIFY || process.env.VERCEL || !fs.existsSync;
 
 // Ensure data directory exists (only if not serverless)
 if (!isServerless) {

@@ -29,7 +29,7 @@ export async function GET(request, { params }) {
 							price: 12999,
 							quantity: 1,
 							subtotal: 12999,
-						}
+						},
 					],
 					totalAmount: 12999,
 					paymentMethod: 'credit_card',
@@ -40,12 +40,12 @@ export async function GET(request, { params }) {
 						city: 'Demo City',
 						state: 'Demo State',
 						zipCode: '12345',
-						country: 'India'
+						country: 'India',
 					},
 					status: 'confirmed',
 					createdAt: new Date().toISOString(),
 				};
-				
+
 				// Enrich with item data
 				const enrichedOrder = {
 					...mockOrder,
@@ -62,10 +62,10 @@ export async function GET(request, { params }) {
 						};
 					}),
 				};
-				
+
 				return NextResponse.json(enrichedOrder);
 			}
-			
+
 			return NextResponse.json({ error: 'Order not found' }, { status: 404 });
 		}
 

@@ -165,6 +165,16 @@ export default function HomePage() {
 		<div className='min-h-screen bg-gray-50'>
 			{/* Clean Hero Banner */}
 			<section className='bg-white border-b border-gray-200'>
+				{/* Professional Note for HR */}
+				<div className='bg-blue-50 border-b border-blue-100'>
+					<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2'>
+						<p className='text-center text-sm text-blue-800'>
+							🏪 <strong>Demo E-commerce Application</strong> - Full-stack
+							project showcasing React, Next.js, Authentication & Cart
+							Management
+						</p>
+					</div>
+				</div>
 				<div className='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'>
 					<div className='grid lg:grid-cols-2 gap-8 items-center'>
 						<div>

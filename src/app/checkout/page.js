@@ -93,11 +93,23 @@ export default function CheckoutPage() {
 
 	const getShippingCost = () => {
 		const total = parseFloat(getCartTotalPrice());
-		return total > 50 ? 0 : 9.99;
+		return total > 3000 ? 0 : 299; // ₹299 shipping for orders under ₹3000
 	};
 
 	const getFinalTotal = () => {
 		return (parseFloat(getCartTotalPrice()) + getShippingCost()).toFixed(2);
+	};
+
+	// Validate shipping address fields
+	const isShippingAddressComplete = () => {
+		return (
+			shippingAddress.fullName.trim() !== '' &&
+			shippingAddress.address.trim() !== '' &&
+			shippingAddress.city.trim() !== '' &&
+			shippingAddress.state.trim() !== '' &&
+			shippingAddress.zipCode.trim() !== '' &&
+			shippingAddress.country.trim() !== ''
+		);
 	};
 
 	const handleSubmit = async (e) => {
@@ -119,7 +131,8 @@ export default function CheckoutPage() {
 			// Redirect to order confirmation
 			router.push(`/order-confirmation?orderId=${order.id}`);
 		} catch (error) {
-			setError(error.message || 'Something went wrong. Please try again.');
+			console.error('Checkout error:', error);
+			setError('Something went wrong. Please complete all required fields.');
 		} finally {
 			setProcessing(false);
 		}
@@ -169,7 +182,9 @@ export default function CheckoutPage() {
 				{error && (
 					<div className='bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6 flex items-center'>
 						<div className='w-4 h-4 mr-3'>⚠️</div>
-						{error}
+						<span>
+							{typeof error === 'string' ? error : 'An error occurred'}
+						</span>
 					</div>
 				)}
 
@@ -598,6 +613,24 @@ export default function CheckoutPage() {
 									</div>
 								</div>
 
+								{/* Demo Notice */}
+								<div className='bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4'>
+									<div className='flex items-start'>
+										<div className='flex-shrink-0'>
+											<span className='text-amber-600'>ℹ️</span>
+										</div>
+										<div className='ml-2'>
+											<h4 className='text-sm font-medium text-amber-800'>
+												Demo Application
+											</h4>
+											<p className='text-xs text-amber-700 mt-1'>
+												This is a portfolio project. Orders are simulated and
+												won't be processed in the live environment.
+											</p>
+										</div>
+									</div>
+								</div>
+
 								{/* Estimated Delivery */}
 								<div className='bg-blue-50 p-3 rounded-lg'>
 									<div className='flex items-center text-sm text-blue-800'>
@@ -606,25 +639,17 @@ export default function CheckoutPage() {
 									</div>
 								</div>
 
-								{/* Technical Note for Hiring Committee */}
-								<div className='bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4'>
-									<h4 className='font-semibold text-blue-900 text-sm mb-1'>📋 Technical Note for Hiring Committee:</h4>
-									<p className='text-xs text-blue-800 leading-relaxed'>
-										This demo uses file-based storage. On Netlify's serverless environment, 
-										orders cannot persist after checkout due to read-only filesystem limitations. 
-										Production would use a database solution.
-									</p>
-								</div>
-
 								{/* Place Order Button */}
 								<Button
 									onClick={handleSubmit}
-									disabled={processing}
-									className='w-full h-12 text-lg font-medium'
+									disabled={processing || !isShippingAddressComplete()}
+									className='w-full h-12 text-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed'
 									size='lg'
 								>
 									{processing
 										? 'Processing...'
+										: !isShippingAddressComplete()
+										? 'Complete Address Required'
 										: `Place Order - ₹${getFinalTotal()}`}
 								</Button>
 

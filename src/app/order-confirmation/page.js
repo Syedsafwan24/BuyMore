@@ -86,21 +86,21 @@ export default function OrderConfirmationPage() {
 							</div>
 							<CardTitle className='text-red-900'>Order not found</CardTitle>
 							<CardDescription className='text-red-700'>
-								We couldn't find your order. Please check your order ID or contact support.
+								We couldn't find your order. Please check your order ID or
+								contact support.
 							</CardDescription>
 						</CardHeader>
 						<CardContent className='text-center space-y-4'>
-							{/* Technical Note for Hiring Committee */}
-							<div className='bg-blue-50 border border-blue-200 rounded-lg p-4 text-left'>
-								<h4 className='font-semibold text-blue-900 mb-2'>📋 Technical Note for Hiring Committee:</h4>
-								<p className='text-sm text-blue-800 leading-relaxed'>
-									This e-commerce application uses file-based JSON storage for demonstration purposes. 
-									On Netlify's serverless environment, the filesystem is read-only at runtime, which means 
-									orders created during checkout cannot be persisted between requests. 
-								</p>
-								<p className='text-sm text-blue-800 mt-2'>
-									<strong>Production Solution:</strong> This would be resolved by implementing a proper database 
-									(PostgreSQL, MongoDB, etc.) or using Netlify/Supabase storage solutions.
+							{/* Demo Information */}
+							<div className='bg-amber-50 border border-amber-200 rounded-lg p-4 text-left'>
+								<h4 className='font-semibold text-amber-900 mb-2'>
+									📋 Demo Application Notice:
+								</h4>
+								<p className='text-sm text-amber-800 leading-relaxed'>
+									This is a portfolio demonstration. Due to serverless hosting
+									limitations, order data cannot be permanently stored. In a
+									production environment, this would be resolved with a proper
+									database solution.
 								</p>
 							</div>
 							<div className='flex flex-col sm:flex-row gap-3'>
@@ -111,9 +111,7 @@ export default function OrderConfirmationPage() {
 									</Link>
 								</Button>
 								<Button asChild className='flex-1'>
-									<Link href='/products'>
-										Continue Shopping
-									</Link>
+									<Link href='/products'>Continue Shopping</Link>
 								</Button>
 							</div>
 						</CardContent>
@@ -251,22 +249,52 @@ export default function OrderConfirmationPage() {
 										</span>
 										<div className='text-sm text-gray-800 bg-gray-50 p-3 rounded-lg'>
 											{(() => {
-												try {
-													const address = JSON.parse(order.shippingAddress);
-													return (
-														<div className='space-y-1'>
-															<p className='font-medium'>{address.fullName}</p>
-															<p>{address.address}</p>
-															<p>
-																{address.city}, {address.state}{' '}
-																{address.zipCode}
-															</p>
-															<p>{address.country}</p>
-														</div>
-													);
-												} catch {
-													return <p>{order.shippingAddress}</p>;
+												// Handle both JSON string and object forms of shippingAddress
+												const raw = order.shippingAddress;
+												let address = null;
+
+												if (raw && typeof raw === 'string') {
+													try {
+														address = JSON.parse(raw);
+													} catch (_) {
+														// Not JSON, show as plain text
+														return <p className='text-gray-700 break-words'>{raw}</p>;
+													}
+												} else if (raw && typeof raw === 'object') {
+													address = raw;
 												}
+
+												if (!address) {
+													return <p className='text-gray-500'>No shipping address available</p>;
+												}
+
+												const name = address.fullName || address.name || '';
+												const line1 = address.address || address.addressLine1 || '';
+												const city = address.city || '';
+												const state = address.state || '';
+												const zip = address.zipCode || address.postalCode || '';
+												const country = address.country || '';
+
+												return (
+													<div className='space-y-1'>
+														{(name || line1) && (
+															<>
+																{name && <p className='font-medium'>{name}</p>}
+																{line1 && <p>{line1}</p>}
+															</>
+														)}
+														{(city || state || zip) && (
+															<p>
+																{city}
+																{city && (state || zip) ? ', ' : ''}
+																{state}
+																{state && zip ? ' ' : ''}
+																{zip}
+															</p>
+														)}
+														{country && <p>{country}</p>}
+													</div>
+												);
 											})()}
 										</div>
 									</div>

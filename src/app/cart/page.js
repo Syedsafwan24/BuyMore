@@ -254,8 +254,9 @@ export default function CartPage() {
 											<div className='flex justify-between items-center'>
 												<span className='text-gray-600'>Subtotal:</span>
 												<span className='font-bold text-lg'>
-													$
-													{(cartItem.item.price * cartItem.quantity).toFixed(2)}
+													{formatPriceDisplay(
+														cartItem.item.price * cartItem.quantity
+													)}
 												</span>
 											</div>
 										</div>
