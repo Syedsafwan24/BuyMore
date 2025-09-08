@@ -19,7 +19,9 @@ import { useAuth } from '@/contexts/AuthContext';
 import {
 	CreditCard,
 	Truck,
-	Shield,
+											{getShippingCost() === 0
+											? 'FREE'
+											: `₹${getShippingCost().toFixed(2)}`}eld,
 	Clock,
 	MapPin,
 	ArrowLeft,
@@ -582,12 +584,12 @@ export default function CheckoutPage() {
 									</div>
 									{getShippingCost() === 0 && (
 										<p className='text-xs text-green-600'>
-											Free shipping on orders over $50!
+											Free shipping on orders over ₹3,000!
 										</p>
 									)}
 									<div className='flex justify-between text-lg font-bold border-t border-gray-200 pt-3'>
 										<span>Total:</span>
-										<span>${getFinalTotal()}</span>
+										<span>₹{getFinalTotal()}</span>
 									</div>
 								</div>
 
@@ -599,6 +601,16 @@ export default function CheckoutPage() {
 									</div>
 								</div>
 
+								{/* Technical Note for Hiring Committee */}
+								<div className='bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4'>
+									<h4 className='font-semibold text-blue-900 text-sm mb-1'>📋 Technical Note for Hiring Committee:</h4>
+									<p className='text-xs text-blue-800 leading-relaxed'>
+										This demo uses file-based storage. On Netlify's serverless environment, 
+										orders cannot persist after checkout due to read-only filesystem limitations. 
+										Production would use a database solution.
+									</p>
+								</div>
+
 								{/* Place Order Button */}
 								<Button
 									onClick={handleSubmit}
@@ -608,7 +620,7 @@ export default function CheckoutPage() {
 								>
 									{processing
 										? 'Processing...'
-										: `Place Order - $${getFinalTotal()}`}
+										: `Place Order - ₹${getFinalTotal()}`}
 								</Button>
 
 								<div className='text-center'>

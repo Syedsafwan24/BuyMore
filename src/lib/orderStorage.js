@@ -4,9 +4,51 @@ import path from 'path';
 const DATA_DIR = path.join(process.cwd(), 'data');
 const ORDERS_FILE = path.join(DATA_DIR, 'orders.json');
 
-// Ensure data directory exists
-if (!fs.existsSync(DATA_DIR)) {
-	fs.mkdirSync(DATA_DIR, { recursive: true });
+// In-memory storage fallback for serverless environments
+let memoryStore = {
+	orders: [
+		{
+			id: "1000",
+			userId: "1",
+			items: [
+				{
+					itemId: "1",
+					name: "IKEA Wooden Dining Table",
+					price: 12999,
+					quantity: 1,
+					subtotal: 12999
+				}
+			],
+			totalAmount: 12999,
+			paymentMethod: "credit_card",
+			shippingAddress: {
+				name: "Demo User",
+				email: "demo@example.com",
+				address: "123 Demo Street",
+				city: "Demo City",
+				state: "Demo State",
+				zipCode: "12345",
+				country: "India"
+			},
+			status: "confirmed",
+			createdAt: new Date().toISOString()
+		}
+	],
+	nextOrderId: 1001
+};
+
+// Check if we're in a serverless environment (Netlify/Vercel)
+const isServerless = process.env.NETLIFY || process.env.VERCEL || !fs.existsSync;
+
+// Ensure data directory exists (only if not serverless)
+if (!isServerless) {
+	try {
+		if (!fs.existsSync(DATA_DIR)) {
+			fs.mkdirSync(DATA_DIR, { recursive: true });
+		}
+	} catch (error) {
+		console.log('File system not writable, using memory storage');
+	}
 }
 
 // Initialize orders file if it doesn't exist
