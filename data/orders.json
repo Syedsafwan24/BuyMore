@@ -49,7 +49,32 @@
 			},
 			"status": "pending",
 			"createdAt": "2025-09-08T10:43:08.947Z"
+		},
+		{
+			"id": "1002",
+			"userId": "1",
+			"items": [
+				{
+					"itemId": "16",
+					"name": "IKEA Wooden Dining Table",
+					"price": 12999,
+					"quantity": 2,
+					"subtotal": 25998
+				}
+			],
+			"totalAmount": 25998,
+			"paymentMethod": "cash_on_delivery",
+			"shippingAddress": {
+				"fullName": "Syed Safwan",
+				"address": "Flat No 4 , Golden Gate , Near Shalikath Clinic Azad Nagar 7th Cross Jali Road",
+				"city": "BHATKAL",
+				"state": "Karnataka",
+				"zipCode": "581320",
+				"country": "India"
+			},
+			"status": "pending",
+			"createdAt": "2025-09-08T12:01:36.780Z"
 		}
 	],
-	"nextOrderId": 1002
+	"nextOrderId": 1003
 }

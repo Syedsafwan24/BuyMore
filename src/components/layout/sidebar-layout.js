@@ -156,7 +156,9 @@ export default function SidebarLayout({ children }) {
 										key={item.name}
 										href={item.href}
 										prefetch={false}
-										onClick={item.href === '/cart' ? handleCartClick : undefined}
+										onClick={
+											item.href === '/cart' ? handleCartClick : undefined
+										}
 										className={`flex items-center justify-between px-3 py-2 text-sm font-medium rounded-md transition-colors ${
 											item.active
 												? 'bg-blue-50 text-blue-700'
@@ -226,7 +228,7 @@ export default function SidebarLayout({ children }) {
 			<div className='flex-1 flex flex-col overflow-hidden'>
 				{/* Top Header */}
 				<header className='bg-white shadow-sm border-b border-gray-200'>
-					<div className='flex items-center justify-between px-4 py-3'>
+					<div className='flex items-center justify-between px-2 sm:px-4 py-3'>
 						{/* Mobile menu button */}
 						<button
 							onClick={() => setIsSidebarOpen(true)}
@@ -236,12 +238,15 @@ export default function SidebarLayout({ children }) {
 						</button>
 
 						{/* Search */}
-						<form onSubmit={handleSearch} className='flex-1 max-w-md mx-4'>
+						<form
+							onSubmit={handleSearch}
+							className='flex-1 max-w-xs sm:max-w-md mx-2 sm:mx-4'
+						>
 							<div className='relative'>
 								<Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400' />
 								<Input
 									type='search'
-									placeholder='Search products...'
+									placeholder='Search...'
 									value={searchQuery}
 									onChange={(e) => setSearchQuery(e.target.value)}
 									className='pl-10 pr-4 py-2 w-full text-sm border-gray-300 focus:border-blue-500 focus:ring-blue-500'
@@ -250,7 +255,7 @@ export default function SidebarLayout({ children }) {
 						</form>
 
 						{/* Right side actions */}
-						<div className='flex items-center space-x-3'>
+						<div className='flex items-center space-x-1 sm:space-x-3'>
 							{/* Cart */}
 							<Link
 								href='/cart'
@@ -269,7 +274,7 @@ export default function SidebarLayout({ children }) {
 
 							{/* User Profile */}
 							{user ? (
-								<div className='flex items-center space-x-2'>
+								<div className='flex items-center space-x-1 sm:space-x-2'>
 									<div className='w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center'>
 										<span className='text-white text-sm font-semibold'>
 											{user.name?.charAt(0) || 'U'}
@@ -277,21 +282,30 @@ export default function SidebarLayout({ children }) {
 									</div>
 									<button
 										onClick={handleLogout}
-										className='text-gray-500 hover:text-red-500'
+										className='text-gray-500 hover:text-red-500 p-1'
 										title='Logout'
 									>
 										<LogOut className='h-4 w-4' />
 									</button>
 								</div>
 							) : (
-								<div className='flex items-center space-x-2'>
+								<div className='flex items-center space-x-1 sm:space-x-2'>
 									<Link href='/login'>
-										<Button variant='outline' size='sm'>
+										<Button
+											variant='outline'
+											size='sm'
+											className='text-xs sm:text-sm px-2 sm:px-3'
+										>
 											Login
 										</Button>
 									</Link>
 									<Link href='/signup'>
-										<Button size='sm'>Sign Up</Button>
+										<Button
+											size='sm'
+											className='text-xs sm:text-sm px-2 sm:px-3'
+										>
+											Sign Up
+										</Button>
 									</Link>
 								</div>
 							)}

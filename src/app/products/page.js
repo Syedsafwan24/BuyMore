@@ -230,19 +230,19 @@ export default function ProductsPage() {
 		<div className='min-h-screen bg-gray-50'>
 			{/* Header Section */}
 			<div className='bg-white border-b border-gray-200'>
-				<div className='px-6 py-4'>
-					<div className='flex items-center justify-between mb-4'>
+				<div className='px-4 sm:px-6 py-4'>
+					<div className='flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 space-y-3 sm:space-y-0'>
 						<h1 className='text-2xl font-bold text-gray-900'>Products</h1>
-						<div className='flex items-center space-x-4'>
+						<div className='flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 w-full sm:w-auto'>
 							{/* Search Bar */}
-							<div className='relative'>
+							<div className='relative flex-1 sm:flex-initial'>
 								<Search className='absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4' />
 								<Input
 									type='text'
 									placeholder='Search products...'
 									value={filters.search}
 									onChange={(e) => handleFilterChange('search', e.target.value)}
-									className='pl-10 w-64'
+									className='pl-10 w-full sm:w-64'
 								/>
 								{filters.search && (
 									<button
@@ -259,7 +259,9 @@ export default function ProductsPage() {
 								variant='outline'
 								size='sm'
 								onClick={() => setShowFilters(!showFilters)}
-								className={showFilters ? 'bg-blue-50 border-blue-200' : ''}
+								className={`w-full sm:w-auto ${
+									showFilters ? 'bg-blue-50 border-blue-200' : ''
+								}`}
 							>
 								<SlidersHorizontal className='h-4 w-4 mr-2' />
 								Filters
@@ -276,7 +278,7 @@ export default function ProductsPage() {
 									variant='ghost'
 									size='sm'
 									onClick={clearFilters}
-									className='text-red-600 hover:text-red-700 hover:bg-red-50'
+									className='text-red-600 hover:text-red-700 hover:bg-red-50 w-full sm:w-auto'
 								>
 									Clear All
 								</Button>
