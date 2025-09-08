@@ -296,7 +296,7 @@ export const CartProvider = ({ children }) => {
 	}, [user]);
 
 	// Checkout function to create order
-	const checkout = useCallback(async () => {
+	const checkout = useCallback(async (checkoutData = {}) => {
 		if (!user) {
 			throw new Error('You must be logged in to checkout');
 		}
@@ -305,7 +305,7 @@ export const CartProvider = ({ children }) => {
 			throw new Error('Cart is empty');
 		}
 
-		const totalAmount = parseFloat(getTotalPrice());
+		const totalAmount = checkoutData.totalAmount || parseFloat(getTotalPrice());
 
 		try {
 			const response = await fetch('/api/checkout', {
@@ -317,6 +317,8 @@ export const CartProvider = ({ children }) => {
 				body: JSON.stringify({
 					cartItems,
 					totalAmount,
+					shippingAddress: checkoutData.shippingAddress,
+					paymentMethod: checkoutData.paymentMethod,
 				}),
 			});
 

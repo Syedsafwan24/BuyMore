@@ -106,8 +106,15 @@ export default function CheckoutPage() {
 		setError('');
 
 		try {
-			// Use the cart's checkout function
-			const order = await checkout();
+			// Prepare checkout data
+			const checkoutData = {
+				shippingAddress,
+				paymentMethod,
+				totalAmount: parseFloat(getFinalTotal()),
+			};
+
+			// Use the cart's checkout function with checkout data
+			const order = await checkout(checkoutData);
 
 			// Redirect to order confirmation
 			router.push(`/order-confirmation?orderId=${order.id}`);
@@ -577,7 +584,7 @@ export default function CheckoutPage() {
 										>
 											{getShippingCost() === 0
 												? 'FREE'
-												: `$${getShippingCost().toFixed(2)}`}
+												: `₹${getShippingCost().toFixed(2)}`}
 										</span>
 									</div>
 									{getShippingCost() === 0 && (

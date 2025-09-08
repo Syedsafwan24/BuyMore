@@ -317,7 +317,7 @@ export default function ProductsPage() {
 									</label>
 									<Input
 										type='number'
-										placeholder='$0'
+										placeholder='₹0'
 										value={filters.minPrice}
 										onChange={(e) =>
 											handleFilterChange('minPrice', e.target.value)
@@ -332,7 +332,7 @@ export default function ProductsPage() {
 									</label>
 									<Input
 										type='number'
-										placeholder='$999'
+										placeholder='₹999'
 										value={filters.maxPrice}
 										onChange={(e) =>
 											handleFilterChange('maxPrice', e.target.value)

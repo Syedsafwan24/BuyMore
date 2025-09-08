@@ -239,7 +239,7 @@ export default function OrderConfirmationPage() {
 										<div>
 											<span className='text-gray-600'>Order Total</span>
 											<p className='font-bold text-2xl text-green-600 mt-1'>
-												${(order.total || order.totalAmount || 0).toFixed(2)}
+												₹{(order.total || order.totalAmount || 0).toFixed(2)}
 											</p>
 										</div>
 									</div>
@@ -394,7 +394,7 @@ export default function OrderConfirmationPage() {
 										<div className='flex justify-between items-center text-2xl font-bold text-gray-900'>
 											<span>Order Total:</span>
 											<span className='text-green-600'>
-												${(order.total || order.totalAmount || 0).toFixed(2)}
+												₹{(order.total || order.totalAmount || 0).toFixed(2)}
 											</span>
 										</div>
 									</div>
